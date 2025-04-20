@@ -8,17 +8,26 @@ use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-
 class UserController extends Controller
 {
     /**
      * Display a listing of users.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with('roles')->paginate(10);
+        $query = User::with('roles');
+        
+        // Filter by role if specified
+        if ($request->has('role')) {
+            $query->whereHas('roles', function ($q) use ($request) {
+                $q->where('name', $request->role);
+            });
+        }
+        
+        $users = $query->paginate(10);
         return view('admin.users.index', compact('users'));
     }
 
@@ -146,5 +155,33 @@ class UserController extends Controller
 
         return redirect()->route('users.index')
             ->with('success', 'User deleted successfully.');
+    }
+
+    /**
+     * Display a listing of students.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function students()
+    {
+        $users = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Student');
+        })->with('roles')->paginate(10);
+        
+        return view('admin.users.index', compact('users'));
+    }
+
+    /**
+     * Display a listing of teachers.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function teachers()
+    {
+        $users = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Teacher');
+        })->with('roles')->paginate(10);
+        
+        return view('admin.users.index', compact('users'));
     }
 }

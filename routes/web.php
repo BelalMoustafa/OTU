@@ -4,18 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\AdminRequestController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\TeacherAttendanceController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\AdminExamController;
-use App\Http\Controllers\LocationAttendanceController;
 use App\Http\Controllers\Admin\LocationAttendanceController as AdminLocationAttendanceController;
 use App\Http\Controllers\GradeReportController;
 use App\Http\Controllers\Admin\GradeReportsController;
 use App\Http\Controllers\Student\GradeController as StudentGradeController;
-
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -457,14 +453,14 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'grades', 'as' => 'grades.']
 
 // Admin Grade Reports Routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/grades/reports', [Admin\GradeReportsController::class, 'index'])->name('admin.grades.reports');
-    Route::get('/admin/grades/course-report/{id}', [Admin\GradeReportsController::class, 'courseReport'])->name('admin.grades.course_report');
-    Route::get('/admin/grades/student-report/{id}', [Admin\GradeReportsController::class, 'studentReport'])->name('admin.grades.student_report');
-    Route::get('/admin/grades/export-course-report/{id}', [Admin\GradeReportsController::class, 'exportCourseReport'])->name('admin.grades.export_course_report');
-    Route::get('/admin/grades/export-student-report/{id}', [Admin\GradeReportsController::class, 'exportStudentReport'])->name('admin.grades.export_student_report');
+    Route::get('/admin/grades/reports', [GradeReportsController::class, 'index'])->name('admin.grades.reports');
+    Route::get('/admin/grades/course-report/{id}', [GradeReportsController::class, 'courseReport'])->name('admin.grades.course_report');
+    Route::get('/admin/grades/student-report/{id}', [GradeReportsController::class, 'studentReport'])->name('admin.grades.student_report');
+    Route::get('/admin/grades/export-course-report/{id}', [GradeReportsController::class, 'exportCourseReport'])->name('admin.grades.export_course_report');
+    Route::get('/admin/grades/export-student-report/{id}', [GradeReportsController::class, 'exportStudentReport'])->name('admin.grades.export_student_report');
 });
 
 // Student Grades Report Route
 Route::middleware(['auth', 'role:student'])->group(function () {
-    Route::get('/student/grades/report', [Student\GradeController::class, 'report'])->name('student.grades.report');
+    Route::get('/student/grades/report', [StudentGradeController::class, 'report'])->name('student.grades.report');
 });
