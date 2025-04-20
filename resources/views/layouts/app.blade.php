@@ -1111,8 +1111,9 @@
             @endif
             
             <li class="nav-item mt-auto fade-in" style="animation-delay: 0.7s">
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" id="logout-form">
                     @csrf
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <button type="submit" class="nav-link text-danger border-0 bg-transparent w-100 text-end">
                         <i class="fas fa-sign-out-alt"></i>
                         خروج
